@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Keyboard, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Keyboard, Mail, Lock, AlertCircle, Github } from 'lucide-react';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -8,7 +8,7 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGithub } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +23,16 @@ export default function Auth() {
       setError(error.message);
     }
 
+    setLoading(false);
+  };
+
+  const handleGithubSignIn = async () => {
+    setError('');
+    setLoading(true);
+    const { error } = await signInWithGithub();
+    if (error) {
+      setError(error.message);
+    }
     setLoading(false);
   };
 
@@ -67,6 +77,27 @@ export default function Auth() {
               <span>{error}</span>
             </div>
           )}
+
+          {/* GitHub Sign-In Button */}
+          <button
+            onClick={handleGithubSignIn}
+            disabled={loading}
+            className="w-full py-3 mb-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <Github className="w-5 h-5" />
+            Sign in with GitHub
+          </button>
+
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with email
+              </span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
