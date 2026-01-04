@@ -35,13 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string) => {
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
-      // Handle specific errors
-      if (error.message.includes('password')) {
-        return { error: { message: 'Password is compromised or too weak. Choose a stronger one.' } };
-      }
       return { error };
     }
-    return { error: null };
+    // Success: User created, email sent
+    return { error: null, message: 'Check your email for confirmation link.' };
   };
 
   const signIn = async (email: string, password: string) => {
